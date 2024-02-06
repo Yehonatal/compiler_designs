@@ -1,4 +1,4 @@
-# .amh : Amharic, first language (stack based)
+# .amh : ትንሽዬ, first language (stack based)
 
 ### Instructions list
 
