@@ -1,6 +1,6 @@
 import sys
 
-# Read arguments from the command line
+# read arguments
 program_filepath = sys.argv[1]
 
 """ Tokenization, Lexical phase 
@@ -9,63 +9,59 @@ program_filepath = sys.argv[1]
 
 # Reading the file's lines
 program_lines = []
+with open(program_filepath, "r") as program_file:
+    program_lines = [
+        line.strip()
+        for line in program_file.readlines()]
 
-with open(program_filepath, "r") as program_files:
-    program_lines = [line.strip() for line in program_files.readlines()]
-
-""" 
-After the scanning 
-
-program_lines = ['አንብ', 'አንብ', 'ቀንስ', 'ዝለል.እኩ.0 መለያ1', 'ማተም "እኩል አይደለም"', 'ተወ', 'መለያ1:', 'ማተም "እኩል"', 'ተወ']
-"""
 
 program = []
 token_counter = 0
 label_tracker = {}
-
 for line in program_lines:
     parts = line.split(" ")
     opcode = parts[0]
 
-    # Check for empty line
+    # check for empty line
     if opcode == "":
         continue
 
-    # Check if it's a label
+    # check if its a label
     if opcode.endswith(":"):
         label_tracker[opcode[:-1]] = token_counter
         continue
 
-    # Store opcode token
+    # store opcode token
     program.append(opcode)
     token_counter += 1
 
-    # Handle each opcode
+    # handle each opcode
     if opcode == "ግፋ":
-        # Expecting a number comes after
+        # expecting a number
         number = int(parts[1])
         program.append(number)
         token_counter += 1
     elif opcode == "ማተም":
-        # Parse the string literal
-        string_literal = " ".join(parts[1:])[1:-1]
+        # parse string literal
+        string_literal = ' '.join(parts[1:])[1:-1]
         program.append(string_literal)
         token_counter += 1
     elif opcode == "ዝለል.እኩ.0":
-        # Read label after JUMP.EQ.0
+        # read label
         label = parts[1]
         program.append(label)
         token_counter += 1
     elif opcode == "ዝለል.ይበ.0":
-        # Read label after JUMP.GT.0
+        # read label
         label = parts[1]
         program.append(label)
         token_counter += 1
 
-# Interpreting the program
+#     Interpret Program
 
 
 class Stack:
+
     def __init__(self, size):
         self.buf = [0 for _ in range(size)]
         self.sp = -1
@@ -85,10 +81,14 @@ class Stack:
 
 pc = 0
 stack = Stack(256)
+print(program)
 
-while program[pc] != "ተወ":
+while program[pc] != "ተው":
     opcode = program[pc]
     pc += 1
+
+    print("Executing opcode:", opcode)
+    print("Stack:", stack.buf[:stack.sp + 1])
 
     if opcode == "ግፋ":
         number = program[pc]
@@ -112,13 +112,13 @@ while program[pc] != "ተወ":
         number = int(input())
         stack.push(number)
     elif opcode == "ዝለል.እኩ.0":
-        number = stack.pop()
+        number = stack.top()
         if number == 0:
             pc = label_tracker[program[pc]]
         else:
             pc += 1
     elif opcode == "ዝለል.ይበ.0":
-        number = stack.pop()
+        number = stack.top()
         if number > 0:
             pc = label_tracker[program[pc]]
         else:

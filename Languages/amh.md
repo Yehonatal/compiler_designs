@@ -12,4 +12,4 @@
     - JUMP.GT.0 (ዝለል.ይበ.0): OPCODE LABEL: jump to label if top of stack is > 0
     - LOOP (ድገም)
     - LABEL (መለያ)
-    - HALT (ተወ)
+    - HALT (ተው)
